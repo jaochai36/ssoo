@@ -1,0 +1,197 @@
+<%- include('./partials/header', { path: '/' }) %>
+
+<!-- Hero Section - Apple Style -->
+<section class="hero-section" style="background: linear-gradient(180deg, var(--apple-bg) 0%, var(--apple-secondary) 100%);">
+  <div class="container py-5">
+    <div class="row align-items-center py-5">
+      <div class="col-lg-6 mb-5 mb-lg-0">
+        <span class="typography-eyebrow mb-3 d-block">เสียงกระซิบที่สั่นสะเทือนโลก</span>
+        <h1 class="typography-hero-headline mb-3">SSOO Blog</h1>
+        <p class="lead mb-5">แพลตฟอร์มที่รวบรวมเสียงเล็กๆ จากทุกมุมโลก เปรียบเสมือนเสียงกระซิบที่รวมกันเป็นแรงสั่นสะเทือนทางวัฒนธรรม</p>
+        <div class="hero-cta d-flex flex-wrap gap-3">
+          <a href="/blogs" class="btn btn-primary btn-lg">
+            อ่านบทความ
+          </a>
+          <% if (locals.user) { %>
+            <a href="/blogs/new" class="btn btn-outline-primary btn-lg">
+              เขียนบทความใหม่
+            </a>
+          <% } else { %>
+            <a href="/auth/login" class="btn btn-outline-primary btn-lg">
+              เข้าสู่ระบบ
+            </a>
+          <% } %>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center text-lg-end">
+        <div class="hero-image-container">
+          <img src="/images/hero.svg" alt="SSOO Blog Hero" class="hero-image img-fluid" onerror="this.src='https://via.placeholder.com/600x400?text=SSOO+Blog'">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Articles Section - Apple Style -->
+<section class="featured-section py-6">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <h2 class="typography-headline">บทความยอดนิยม</h2>
+      <p class="lead mx-auto" style="max-width: 700px;">ค้นพบมุมมองและเรื่องราวที่น่าสนใจมากมายจากผู้เขียนมากประสบการณ์</p>
+    </div>
+    
+    <div class="row g-4" id="featured-articles">
+      <!-- บทความจะถูกเพิ่มโดย JavaScript -->
+      <div class="col-12 text-center py-5">
+        <div class="apple-loader">
+          <span class="visually-hidden">กำลังโหลด...</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-5">
+      <a href="/blogs" class="btn btn-outline-primary">ดูบทความทั้งหมด</a>
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section - Apple Style -->
+<section class="categories-section py-6" style="background-color: var(--apple-secondary);">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <h2 class="typography-headline">หมวดหมู่ยอดนิยม</h2>
+      <p class="lead mx-auto" style="max-width: 700px;">ค้นพบเนื้อหาที่คุณสนใจได้ง่ายๆ ผ่านหมวดหมู่ที่หลากหลาย</p>
+    </div>
+    
+    <div class="row g-4" id="popular-tags">
+      <!-- หมวดหมู่จะถูกเพิ่มโดย JavaScript -->
+      <div class="col-12 text-center py-3">
+        <div class="apple-loader">
+          <span class="visually-hidden">กำลังโหลด...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action - Apple Style -->
+<section class="cta-section py-6" style="background: linear-gradient(135deg, var(--ssoo-primary) 0%, #0077ED 100%); color: white;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h2 class="mb-4">ร่วมแบ่งปันเรื่องราวของคุณ</h2>
+        <p class="lead mb-5">แบ่งปันประสบการณ์ ความคิด หรือเรื่องราวที่คุณอยากให้โลกได้รู้ สร้างการเปลี่ยนแปลงผ่านตัวอักษรของคุณ</p>
+        <% if (locals.user) { %>
+          <a href="/blogs/new" class="btn btn-light btn-lg px-5 py-3">
+            เริ่มเขียนบทความ <i class="fas fa-arrow-right ms-2"></i>
+          </a>
+        <% } else { %>
+          <a href="/auth/register" class="btn btn-light btn-lg px-5 py-3">
+            สมัครสมาชิก <i class="fas fa-arrow-right ms-2"></i>
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JavaScript สำหรับดึงบทความและแสดงในหน้าหลัก -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // ดึงบทความยอดนิยม
+    fetch('/api/blogs?limit=6')
+      .then(response => response.json())
+      .then(data => {
+        const articlesContainer = document.getElementById('featured-articles');
+        articlesContainer.innerHTML = '';
+        
+        if (data.data && data.data.length > 0) {
+          data.data.forEach(article => {
+            const articleCard = `
+              <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card blog-card">
+                  <div class="blog-card-img-container">
+                    ${article.coverImage 
+                      ? `<img src="${article.coverImage}" class="blog-card-img" alt="${article.title}" onerror="this.src='https://via.placeholder.com/400x200?text=SSOO+Blog'">`
+                      : `<img src="https://via.placeholder.com/400x200?text=SSOO+Blog" class="blog-card-img" alt="${article.title}">`
+                    }
+                  </div>
+                  <div class="card-body d-flex flex-column">
+                    <div class="blog-meta">
+                      <div class="blog-meta-item">
+                        <i class="fas fa-user-circle"></i>
+                        <span>${article.author.name}</span>
+                      </div>
+                      <div class="blog-meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>${new Date(article.createdAt).toLocaleDateString('th-TH')}</span>
+                      </div>
+                    </div>
+                    <h5 class="card-title">${article.title}</h5>
+                    <div class="tags mb-3">
+                      ${article.tags.map(tag => `<span class="badge bg-light text-dark me-1">${tag}</span>`).join('')}
+                    </div>
+                    <a href="/blogs/${article.slug}" class="btn btn-outline-primary mt-auto">อ่านต่อ</a>
+                  </div>
+                </div>
+              </div>
+            `;
+            articlesContainer.innerHTML += articleCard;
+          });
+        } else {
+          articlesContainer.innerHTML = `
+            <div class="col-12 text-center">
+              <p>ยังไม่มีบทความในขณะนี้</p>
+              <% if (locals.user) { %>
+                <a href="/blogs/new" class="btn btn-primary mt-3">เขียนบทความแรก</a>
+              <% } %>
+            </div>
+          `;
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching articles:', error);
+        document.getElementById('featured-articles').innerHTML = `
+          <div class="col-12 text-center">
+            <p>เกิดข้อผิดพลาดในการโหลดบทความ</p>
+            <button onclick="location.reload()" class="btn btn-outline-primary mt-3">ลองใหม่</button>
+          </div>
+        `;
+      });
+    
+    // ดึงแท็กยอดนิยม
+    const popularTags = [
+      { name: 'เทคโนโลยี', icon: 'fa-laptop-code' },
+      { name: 'ท่องเที่ยว', icon: 'fa-map-marked-alt' },
+      { name: 'อาหาร', icon: 'fa-utensils' },
+      { name: 'สุขภาพ', icon: 'fa-heartbeat' },
+      { name: 'การศึกษา', icon: 'fa-graduation-cap' },
+      { name: 'ธุรกิจ', icon: 'fa-chart-line' },
+      { name: 'ศิลปะ', icon: 'fa-palette' },
+      { name: 'กีฬา', icon: 'fa-running' }
+    ];
+    
+    const tagsContainer = document.getElementById('popular-tags');
+    tagsContainer.innerHTML = '';
+    
+    popularTags.forEach(tag => {
+      const tagCard = `
+        <div class="col-6 col-md-3">
+          <a href="/blogs?tag=${tag.name}" class="text-decoration-none">
+            <div class="card category-card text-center h-100">
+              <div class="card-body">
+                <div class="category-icon mb-3">
+                  <i class="fas ${tag.icon}"></i>
+                </div>
+                <h5 class="card-title mb-0">${tag.name}</h5>
+              </div>
+            </div>
+          </a>
+        </div>
+      `;
+      tagsContainer.innerHTML += tagCard;
+    });
+  });
+</script>
+
+<%- include('./partials/footer') %>

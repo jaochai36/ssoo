@@ -1,0 +1,83 @@
+<%- include('../partials/header') %>
+
+<div class="apple-container">
+  <div class="apple-page-header">
+    <h1>เขียนบทความใหม่</h1>
+    <p class="apple-subtitle">สร้างเนื้อหาที่น่าสนใจให้กับผู้อ่านของคุณ</p>
+  </div>
+  
+  <div class="apple-card">
+    <form id="blog-form" class="apple-form">
+      <div class="apple-form-group">
+        <label for="title" class="apple-form-label">หัวข้อ</label>
+        <input type="text" class="apple-form-control" id="title" name="title" required 
+               placeholder="เพิ่มหัวข้อที่น่าสนใจ">
+      </div>
+
+      <div class="apple-form-group">
+        <label for="cover-image" class="apple-form-label">รูปปก</label>
+        <div class="apple-file-upload">
+          <input type="file" class="apple-form-control" id="cover-image" name="image" accept="image/*">
+          <label for="cover-image" class="apple-file-upload-label">
+            <span class="icon">+</span>
+            <span>เลือกรูปภาพ</span>
+          </label>
+        </div>
+        <div id="image-preview" class="apple-image-preview mt-2"></div>
+      </div>
+
+      <div class="apple-form-group">
+        <label for="content" class="apple-form-label">เนื้อหา</label>
+        <textarea id="content" name="content" class="apple-editor"></textarea>
+      </div>
+
+      <div class="apple-form-group">
+        <label for="tags" class="apple-form-label">แท็ก</label>
+        <input type="text" class="apple-form-control" id="tags" name="tags" 
+               placeholder="เช่น: เทคโนโลยี, การเขียนโปรแกรม">
+        <small class="apple-form-text">คั่นแต่ละแท็กด้วยเครื่องหมายจุลภาค</small>
+      </div>
+
+      <div class="apple-form-actions">
+        <button type="button" class="apple-button-secondary" onclick="history.back()">ยกเลิก</button>
+        <button type="submit" class="apple-button-primary">เผยแพร่</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize editor with Apple-inspired styling
+    if (typeof tinymce !== 'undefined') {
+      tinymce.init({
+        selector: '#content',
+        height: 400,
+        menubar: false,
+        plugins: [
+          'advlist autolink lists link image charmap print preview anchor',
+          'searchreplace visualblocks code fullscreen',
+          'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat',
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 16px; }'
+      });
+    }
+    
+    // Image preview functionality
+    const imageInput = document.getElementById('cover-image');
+    const imagePreview = document.getElementById('image-preview');
+    
+    imageInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.innerHTML = `<div class="apple-preview-container"><img src="${e.target.result}" alt="Preview" class="apple-image-preview-img"></div>`;
+        }
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

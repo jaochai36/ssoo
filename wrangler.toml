@@ -1,0 +1,15 @@
+name = "ssoo-user-management"
+compatibility_date = "2023-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# การตั้งค่าสิ่งแวดล้อมสำหรับ development
+[env.development]
+vars = { NODE_ENV = "development" }
+
+# การตั้งค่าสิ่งแวดล้อมสำหรับ production
+[env.production]
+vars = { NODE_ENV = "production" }
+
+# กำหนดว่าจะให้ทำการ build อย่างไร
+[build]
+command = "npm run build"

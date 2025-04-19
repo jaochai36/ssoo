@@ -1,0 +1,101 @@
+<%- include('../partials/header') %>
+
+<div class="auth-container py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-5">
+        <div class="auth-card">
+          <div class="text-center mb-5">
+            <div class="apple-icon-circle mb-4">
+              <i class="fas fa-user-shield"></i>
+            </div>
+            <h2 class="typography-headline mb-2">เข้าสู่ระบบ</h2>
+            <p class="text-muted">เข้าสู่ระบบเพื่อแบ่งปันความคิดของคุณกับโลก</p>
+          </div>
+          
+          <% if (typeof errors !== 'undefined') { %>
+            <div class="alert-apple alert-danger mb-4">
+              <div class="alert-icon">
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+              <div class="alert-content">
+                <% errors.forEach(function(error, index) { %>
+                  <%= error.msg %><%= index < errors.length - 1 ? '<br>' : '' %>
+                <% }); %>
+              </div>
+            </div>
+          <% } %>
+          
+          <% if (typeof message !== 'undefined') { %>
+            <div class="alert-apple alert-<%= message.type %> mb-4">
+              <div class="alert-icon">
+                <% if (message.type === 'success') { %>
+                  <i class="fas fa-check-circle"></i>
+                <% } else { %>
+                  <i class="fas fa-exclamation-circle"></i>
+                <% } %>
+              </div>
+              <div class="alert-content">
+                <%= message.text %>
+              </div>
+            </div>
+          <% } %>
+          
+          <form action="/auth/login" method="POST">
+            <div class="mb-4">
+              <label for="email" class="form-label">อีเมล</label>
+              <div class="apple-input-group">
+                <div class="apple-input-icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-control apple-input"
+                  placeholder="กรอกอีเมลของคุณ"
+                  value="<%= typeof email != 'undefined' ? email : '' %>"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center">
+                <label for="password" class="form-label">รหัสผ่าน</label>
+                <!-- <a href="#" class="small apple-link">ลืมรหัสผ่าน?</a> -->
+              </div>
+              <div class="apple-input-group">
+                <div class="apple-input-icon">
+                  <i class="fas fa-lock"></i>
+                </div>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-control apple-input"
+                  placeholder="กรอกรหัสผ่านของคุณ"
+                  required
+                  autocomplete="current-password"
+                />
+              </div>
+            </div>
+            
+            <div class="d-grid mb-4">
+              <button type="submit" class="btn btn-primary btn-lg apple-button-auth">
+                เข้าสู่ระบบ
+              </button>
+            </div>
+            
+            <div class="text-center apple-auth-footer">
+              <p>ยังไม่มีบัญชี? <a href="/auth/register" class="apple-link fw-medium">สมัครสมาชิกที่นี่</a></p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

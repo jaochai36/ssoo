@@ -1,0 +1,151 @@
+<%- include('../partials/header') %>
+
+<div class="row g-4">
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light border-0 py-3">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-tachometer-alt me-2"></i>แผงควบคุม</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="list-group list-group-flush admin-sidebar">
+          <a href="/admin" class="list-group-item list-group-item-action active">
+            <i class="fas fa-home me-2"></i>แดชบอร์ด
+          </a>
+          <a href="/admin/users" class="list-group-item list-group-item-action">
+            <i class="fas fa-users me-2"></i>จัดการผู้ใช้
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-9">
+    <div class="mb-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold mb-0">แดชบอร์ด</h2>
+          <p class="text-muted">ยินดีต้อนรับ, <%= user.name %></p>
+        </div>
+        <div>
+          <span class="badge bg-success px-3 py-2">
+            <i class="fas fa-check-circle me-1"></i> ออนไลน์
+          </span>
+        </div>
+      </div>
+      
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm h-100" style="overflow: hidden;">
+            <div class="card-body position-relative p-4">
+              <div style="position: absolute; width: 150px; height: 150px; background: linear-gradient(135deg, rgba(0,113,227,0.1), rgba(0,182,255,0.1)); border-radius: 50%; top: -30px; right: -30px;"></div>
+              <div class="position-relative">
+                <h3 class="display-4 fw-bold text-primary"><%= userCount %></h3>
+                <p class="text-muted mb-3">จำนวนผู้ใช้ทั้งหมด</p>
+                <a href="/admin/users" class="btn btn-sm btn-primary">
+                  <i class="fas fa-users me-2"></i>จัดการผู้ใช้
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3">เวลาและวันที่ปัจจุบัน</h5>
+              <div class="d-flex align-items-center mb-3">
+                <div class="fs-4 me-3 text-primary">
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="fs-5" id="current-date">
+                  <%= new Date().toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <div class="fs-4 me-3 text-primary">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="fs-5" id="current-time">
+                  <%= new Date().toLocaleTimeString('th-TH') %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light border-0 py-3">
+          <h5 class="mb-0 fw-bold">ข้อมูลระบบ</h5>
+        </div>
+        <div class="card-body p-4">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-4">
+                <div class="d-flex align-items-center mb-2">
+                  <div class="fs-5 me-2 text-primary">
+                    <i class="fas fa-user-shield"></i>
+                  </div>
+                  <h6 class="mb-0 fw-bold">ข้อมูลแอดมิน</h6>
+                </div>
+                <div class="ps-4">
+                  <div class="d-flex mb-2">
+                    <div class="text-muted" style="width: 100px;">ชื่อ:</div>
+                    <div><%= user.name %></div>
+                  </div>
+                  <div class="d-flex mb-2">
+                    <div class="text-muted" style="width: 100px;">อีเมล:</div>
+                    <div><%= user.email %></div>
+                  </div>
+                  <div class="d-flex">
+                    <div class="text-muted" style="width: 100px;">สิทธิ์:</div>
+                    <div><span class="badge bg-danger">แอดมิน</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="mb-4">
+                <div class="d-flex align-items-center mb-2">
+                  <div class="fs-5 me-2 text-primary">
+                    <i class="fas fa-server"></i>
+                  </div>
+                  <h6 class="mb-0 fw-bold">ข้อมูลเซิร์ฟเวอร์</h6>
+                </div>
+                <div class="ps-4">
+                  <div class="d-flex mb-2">
+                    <div class="text-muted" style="width: 100px;">สถานะ:</div>
+                    <div><span class="badge bg-success">ออนไลน์</span></div>
+                  </div>
+                  <div class="d-flex mb-2">
+                    <div class="text-muted" style="width: 100px;">พอร์ต:</div>
+                    <div>3000</div>
+                  </div>
+                  <div class="d-flex mb-0">
+                    <div class="text-muted" style="width: 100px;">ฐานข้อมูล:</div>
+                    <div><span class="badge bg-success">เชื่อมต่อแล้ว</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // อัปเดตเวลาแบบเรียลไทม์
+  function updateTime() {
+    const now = new Date();
+    const timeElem = document.getElementById('current-time');
+    timeElem.textContent = now.toLocaleTimeString('th-TH');
+  }
+  
+  // อัปเดตเวลาทุกๆ 1 วินาที
+  setInterval(updateTime, 1000);
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,110 @@
+<%- include('../partials/header') %>
+
+<div class="row g-4">
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light border-0 py-3">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-tachometer-alt me-2"></i>แผงควบคุม</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="list-group list-group-flush admin-sidebar">
+          <a href="/admin" class="list-group-item list-group-item-action">
+            <i class="fas fa-home me-2"></i>แดชบอร์ด
+          </a>
+          <a href="/admin/users" class="list-group-item list-group-item-action active">
+            <i class="fas fa-users me-2"></i>จัดการผู้ใช้
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-9">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light border-0 py-3">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-user-edit me-2"></i>แก้ไขข้อมูลผู้ใช้</h5>
+      </div>
+      <div class="card-body p-4">
+        <% if (typeof errors !== 'undefined') { %>
+          <div class="alert alert-danger">
+            <% errors.forEach(function(error) { %>
+              <div><i class="fas fa-exclamation-circle me-2"></i><%= error.msg %></div>
+            <% }); %>
+          </div>
+        <% } %>
+        
+        <div class="mb-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="display-6 text-primary me-3">
+              <i class="fas fa-user-circle"></i>
+            </div>
+            <div>
+              <h4 class="mb-1 fw-bold"><%= user.name %></h4>
+              <p class="text-muted mb-0"><%= user.email %></p>
+            </div>
+          </div>
+        </div>
+        
+        <form action="/admin/users/edit/<%= user._id %>" method="POST">
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+              <label for="name" class="form-label">ชื่อ-นามสกุล</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-user text-muted"></i>
+                </span>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  class="form-control border-start-0"
+                  value="<%= user.name %>"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="email" class="form-label">อีเมล</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-envelope text-muted"></i>
+                </span>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-control border-start-0"
+                  value="<%= user.email %>"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="role" class="form-label">สิทธิ์การใช้งาน</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-user-shield text-muted"></i>
+                </span>
+                <select id="role" name="role" class="form-select border-start-0">
+                  <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>สมาชิก</option>
+                  <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>แอดมิน</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="d-flex flex-column flex-sm-row gap-3 justify-content-end mt-4">
+            <a href="/admin/users" class="btn btn-outline-primary">
+              <i class="fas fa-arrow-left me-2"></i>ย้อนกลับ
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-2"></i>บันทึกข้อมูล
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

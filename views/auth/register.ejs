@@ -1,0 +1,121 @@
+<%- include('../partials/header') %>
+
+<div class="auth-container py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-5">
+        <div class="auth-card">
+          <div class="text-center mb-5">
+            <div class="apple-icon-circle mb-4">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <h2 class="typography-headline mb-2">สร้างบัญชีใหม่</h2>
+            <p class="text-muted">เริ่มต้นการเดินทางด้วยบัญชีใหม่ของคุณ</p>
+          </div>
+          
+          <% if (typeof errors !== 'undefined') { %>
+            <div class="alert-apple alert-danger mb-4">
+              <div class="alert-icon">
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+              <div class="alert-content">
+                <% errors.forEach(function(error, index) { %>
+                  <%= error.msg %><%= index < errors.length - 1 ? '<br>' : '' %>
+                <% }); %>
+              </div>
+            </div>
+          <% } %>
+          
+          <form action="/auth/register" method="POST">
+            <div class="mb-4">
+              <label for="name" class="form-label">ชื่อ-นามสกุล</label>
+              <div class="apple-input-group">
+                <div class="apple-input-icon">
+                  <i class="fas fa-user"></i>
+                </div>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  class="form-control apple-input"
+                  placeholder="กรอกชื่อ-นามสกุลของคุณ"
+                  value="<%= typeof name != 'undefined' ? name : '' %>"
+                  required
+                  autocomplete="name"
+                />
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="email" class="form-label">อีเมล</label>
+              <div class="apple-input-group">
+                <div class="apple-input-icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-control apple-input"
+                  placeholder="กรอกอีเมลของคุณ"
+                  value="<%= typeof email != 'undefined' ? email : '' %>"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="password" class="form-label">รหัสผ่าน</label>
+              <div class="apple-input-group">
+                <div class="apple-input-icon">
+                  <i class="fas fa-lock"></i>
+                </div>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-control apple-input"
+                  placeholder="กรอกรหัสผ่าน (อย่างน้อย 6 ตัวอักษร)"
+                  required
+                  autocomplete="new-password"
+                />
+              </div>
+              <div class="form-text">รหัสผ่านควรมีอย่างน้อย 6 ตัวอักษร</div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="password2" class="form-label">ยืนยันรหัสผ่าน</label>
+              <div class="apple-input-group">
+                <div class="apple-input-icon">
+                  <i class="fas fa-lock"></i>
+                </div>
+                <input
+                  type="password"
+                  id="password2"
+                  name="password2"
+                  class="form-control apple-input"
+                  placeholder="กรอกรหัสผ่านอีกครั้ง"
+                  required
+                  autocomplete="new-password"
+                />
+              </div>
+            </div>
+            
+            <div class="d-grid mb-4">
+              <button type="submit" class="btn btn-primary btn-lg apple-button-auth">
+                สร้างบัญชีใหม่
+              </button>
+            </div>
+            
+            <div class="text-center apple-auth-footer">
+              <p>มีบัญชีอยู่แล้ว? <a href="/auth/login" class="apple-link fw-medium">เข้าสู่ระบบที่นี่</a></p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

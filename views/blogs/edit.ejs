@@ -1,0 +1,142 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <h1>แก้ไขบทความ</h1>
+  
+  <form id="blog-form" class="mt-4">
+    <div class="mb-3">
+      <label for="title" class="form-label">หัวข้อ</label>
+      <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="cover-image" class="form-label">รูปปก</label>
+      <input type="file" class="form-control" id="cover-image" name="image" accept="image/*">
+      <div id="image-preview" class="mt-2"></div>
+    </div>
+
+    <div class="mb-3">
+      <label for="content" class="form-label">เนื้อหา</label>
+      <textarea id="content" name="content"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="tags" class="form-label">แท็ก (คั่นด้วยเครื่องหมายจุลภาค)</label>
+      <input type="text" class="form-control" id="tags" name="tags">
+    </div>
+
+    <div class="mb-3">
+      <label for="status" class="form-label">สถานะ</label>
+      <select class="form-select" id="status" name="status">
+        <option value="draft">ฉบับร่าง</option>
+        <option value="published">เผยแพร่</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">บันทึก</button>
+    <a href="javascript:history.back()" class="btn btn-secondary">ยกเลิก</a>
+  </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.0.0/tinymce.min.js"></script>
+<script>
+// Initialize TinyMCE
+tinymce.init({
+  selector: '#content',
+  plugins: 'link image code table lists',
+  toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
+  height: 400,
+  images_upload_url: '/upload-image',
+  images_upload_handler: async (blobInfo, progress) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', blobInfo.blob(), blobInfo.filename());
+
+      const response = await fetch('/upload-image', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+      if (result.location) {
+        return result.location;
+      }
+      throw new Error('Upload failed');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  }
+});
+
+// Load blog data
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const slug = window.location.pathname.split('/')[2];
+    const response = await fetch(`/blogs/${slug}`);
+    const result = await response.json();
+    
+    if (result.status === 'success') {
+      const blog = result.data;
+      
+      // Fill form fields
+      document.getElementById('title').value = blog.title;
+      tinymce.get('content').setContent(blog.content);
+      document.getElementById('tags').value = blog.tags.join(', ');
+      document.getElementById('status').value = blog.status;
+      
+      // Show existing cover image
+      if (blog.coverImage) {
+        document.getElementById('image-preview').innerHTML = `
+          <img src="${blog.coverImage}" class="img-fluid" style="max-height: 200px">
+        `;
+      }
+    }
+  } catch (error) {
+    console.error('Error loading blog:', error);
+    alert('เกิดข้อผิดพลาดในการโหลดข้อมูลบทความ');
+  }
+});
+
+// Image preview
+document.getElementById('cover-image').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('image-preview').innerHTML = `
+        <img src="${e.target.result}" class="img-fluid" style="max-height: 200px">
+      `;
+    }
+    reader.readAsDataURL(file);
+  }
+});
+
+// Form submission
+document.getElementById('blog-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  try {
+    const slug = window.location.pathname.split('/')[2];
+    const formData = new FormData(this);
+    formData.append('content', tinymce.get('content').getContent());
+
+    const response = await fetch(`/blogs/${slug}`, {
+      method: 'PUT',
+      body: formData
+    });
+
+    const result = await response.json();
+    if (result.status === 'success') {
+      window.location.href = `/blogs/${result.data.slug}`;
+    } else {
+      alert('เกิดข้อผิดพลาดในการบันทึกบทความ');
+    }
+  } catch (error) {
+    console.error('Error updating blog:', error);
+    alert('เกิดข้อผิดพลาดในการบันทึกบทความ');
+  }
+});
+</script>
+
+<%- include('../partials/footer') %>

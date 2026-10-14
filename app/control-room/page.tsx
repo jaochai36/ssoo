@@ -6,11 +6,23 @@ export default async function ControlRoomPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const [titles, people, articles] = await Promise.all([
-    prisma.title.count(),
-    prisma.person.count(),
-    prisma.article.count(),
-  ]);
+  let counts: { titles: number; people: number; articles: number } | null = null;
+  let databaseError = false;
+
+  try {
+    const [titles, people, articles] = await Promise.all([
+      prisma.title.count(),
+      prisma.person.count(),
+      prisma.article.count(),
+    ]);
+    counts = { titles, people, articles };
+  } catch (error) {
+    databaseError = true;
+    console.error("[control-room] database count query failed", {
+      name: error instanceof Error ? error.name : "UnknownError",
+      message: error instanceof Error ? error.message : "Unknown database error",
+    });
+  }
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-12">
@@ -24,11 +36,16 @@ export default async function ControlRoomPage() {
           Admin access
         </span>
       </div>
+      {databaseError ? (
+        <p className="mt-8 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          Database counts are temporarily unavailable. Check the server database connection.
+        </p>
+      ) : null}
       <section className="mt-12 grid gap-5 md:grid-cols-3">
         {[
-          ["Titles", titles, "Published titles in the catalog."],
-          ["People", people, "People available in the catalog."],
-          ["Articles", articles, "Articles available in the catalog."],
+          ["Titles", counts?.titles ?? "—", "Published titles in the catalog."],
+          ["People", counts?.people ?? "—", "People available in the catalog."],
+          ["Articles", counts?.articles ?? "—", "Articles available in the catalog."],
         ].map(([label, value, description]) => (
           <article key={label} className="rounded-2xl border border-line bg-white p-6 shadow-soft">
             <p className="text-sm text-muted">{label}</p>

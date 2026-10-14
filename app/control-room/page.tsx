@@ -1,10 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 
 export default async function ControlRoomPage() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const [titles, people, articles] = await Promise.all([
+    prisma.title.count(),
+    prisma.person.count(),
+    prisma.article.count(),
+  ]);
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-12">
@@ -20,9 +26,9 @@ export default async function ControlRoomPage() {
       </div>
       <section className="mt-12 grid gap-5 md:grid-cols-3">
         {[
-          ["Foundation", "Ready", "The application foundation is configured."],
-          ["Authentication", "Connected", "Supabase session protection is active."],
-          ["Database", "Prisma", "The schema and seed are ready for the next phase."],
+          ["Titles", titles, "Published titles in the catalog."],
+          ["People", people, "People available in the catalog."],
+          ["Articles", articles, "Articles available in the catalog."],
         ].map(([label, value, description]) => (
           <article key={label} className="rounded-2xl border border-line bg-white p-6 shadow-soft">
             <p className="text-sm text-muted">{label}</p>

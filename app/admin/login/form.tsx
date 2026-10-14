@@ -1,13 +1,44 @@
 "use client";
 
-import { useActionState } from "react";
-import { login, type LoginState } from "./actions";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import type { Route } from "next";
 
 export default function LoginForm({ next }: { next?: string }) {
-  const [state, formAction, pending] = useActionState<LoginState, FormData>(login, {});
+  const router = useRouter();
+  const [error, setError] = useState<string>();
+  const [pending, setPending] = useState(false);
+
+  async function handleSubmit(formData: FormData) {
+    setError(undefined);
+    setPending(true);
+
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        body: formData,
+      });
+      const result = (await response.json()) as { error?: string; redirectTo?: string };
+      if (!response.ok || !result.redirectTo) {
+        setError(result.error ?? "The email or password could not be verified.");
+        return;
+      }
+      router.replace(result.redirectTo as Route);
+    } catch {
+      setError("Unable to reach the authentication service.");
+    } finally {
+      setPending(false);
+    }
+  }
 
   return (
-    <form action={formAction} className="mt-8 space-y-5">
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        void handleSubmit(new FormData(event.currentTarget));
+      }}
+      className="mt-8 space-y-5"
+    >
       <input type="hidden" name="next" value={next ?? "/control-room"} />
       <label className="block text-sm font-medium">
         Email
@@ -29,7 +60,7 @@ export default function LoginForm({ next }: { next?: string }) {
           className="mt-2 w-full rounded-xl border border-line bg-paper px-4 py-3 outline-none focus:border-accent"
         />
       </label>
-      {state.error ? <p className="text-sm text-red-700">{state.error}</p> : null}
+      {error ? <p className="text-sm text-red-700">{error}</p> : null}
       <button
         type="submit"
         disabled={pending}

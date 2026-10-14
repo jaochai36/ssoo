@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ink: 31 29 26;
+  --color-paper: 250 248 244;
+  --color-sand: 239 232 220;
+  --color-accent: 177 91 56;
+  --color-accent-strong: 139 62 35;
+  --color-line: 219 210 198;
+  --color-muted: 112 103 94;
+  --font-sans: "Inter";
+  --font-display: "Fraunces";
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  @apply bg-paper text-ink antialiased;
+}
+
+a {
+  @apply transition-colors;
+}
+
+button,
+input {
+  font: inherit;
+}

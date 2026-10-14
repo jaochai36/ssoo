@@ -3,9 +3,23 @@ import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
+  const isControlRoom = request.nextUrl.pathname.startsWith("/control-room");
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    if (isControlRoom) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      url.searchParams.set("next", request.nextUrl.pathname);
+      return NextResponse.redirect(url);
+    }
+    return response;
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -26,7 +40,7 @@ export async function middleware(request: NextRequest) {
   const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
   const isAdmin = user?.email?.toLowerCase() === adminEmail;
 
-  if (request.nextUrl.pathname.startsWith("/control-room") && !isAdmin) {
+  if (isControlRoom && !isAdmin) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     url.searchParams.set("next", request.nextUrl.pathname);

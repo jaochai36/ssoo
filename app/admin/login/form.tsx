@@ -1,10 +1,18 @@
 "use client";
 
 import { useActionState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import type { Route } from "next";
 import { login, type LoginState } from "./actions";
 
 export default function LoginForm({ next }: { next?: string }) {
+  const router = useRouter();
   const [state, formAction, pending] = useActionState<LoginState, FormData>(login, {});
+
+  useEffect(() => {
+    if (state.redirectTo) router.replace(state.redirectTo as Route);
+  }, [router, state.redirectTo]);
 
   return (
     <form action={formAction} className="mt-8 space-y-5">
